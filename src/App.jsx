@@ -10,7 +10,7 @@ function App() {
 
   const buscarClima = async () =>{
     if(!cidade.trim()){
-      setErro("Por favor, digite uma cidade");
+      setErro("Por favor, digite uma cidade❗");
       return;
     }
 
@@ -25,7 +25,7 @@ function App() {
       const resposta = await fetch(url);
 
       if(!resposta.ok){
-        throw new Error("Cidade não encontrada")
+        throw new Error("Cidade não encontrada❌")
       }
 
       const dados = await resposta.json();
@@ -72,25 +72,29 @@ function App() {
                 {carregando ? "Buscando..." : "Buscar"}
               </button>
             </div>
+            {erro && <p className="error-message">{erro}</p>}
           </div>
 
+          {clima && (<>
           {/* Resultado do Clima */}
           <div className="card-resultado">
             <div className="info-cidade">
               <div className="nome-cidade">
                 <MapPinned style={{color: "#333"}} size={48} />
-                Campinas, BR
+                {clima.name}, {clima.sys.country}
               </div>
-              <p className="desc-cidade">Nublado</p>
+              <p className="desc-cidade">
+                {clima.weather[0].description}
+              </p>
             </div>
 
             {/* Temperatura Principal */}
             <div className="temperatura-box">
               <div className="temperatura-valor">
-                28ºC
+                {Math.round(clima.main.temp)}ºC
               </div>
               <div className="sens-termica">
-                Sensação Térmica: 31ºC
+                Sensação Térmica: {Math.round(clima.main.feels_like)}ºC
               </div>
             </div>
 
@@ -104,7 +108,8 @@ function App() {
                   Min/Max
                 </p>
                 <p className="detal-valor">
-                  25ºC/28ºC
+                {Math.round(clima.main.temp_min)}ºC/
+                {Math.round(clima.main.temp_max)}ºC
                 </p>
               </div>
 
@@ -116,7 +121,7 @@ function App() {
                   Umidade
                 </p>
                 <p className="detal-valor">
-                  20%
+                  {clima.main.humidity}%
                 </p>
               </div>
 
@@ -128,13 +133,13 @@ function App() {
                   Vento
                 </p>
                 <p className="detal-valor">
-                  12 km/h
+                {Math.round(clima.wind.speed * 3.6)} km/h
                 </p>
               </div>
             </div>
 
           </div>{/* Fecha Resultado */}
-
+          </>)}
         </div>
       </div>
     </>
